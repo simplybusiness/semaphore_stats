@@ -32,6 +32,8 @@ minutes = 0
 seconds = 0
 number_of_items_taken_into_account = 0
 number_of_items = 0
+start_build_id = 15
+stop_build_id = 10
 begin
   page += 1
   visit "#{branch_page}?page=#{page}"
@@ -40,19 +42,23 @@ begin
   all('div.c-branches-list-item').each do |list_item|
     build_item_found = true
     number_of_items += 1
-
-    label_text = list_item.find('div.c-branches-list-item_label-holder a').text
-    if label_text.strip == 'PASSED'
-      list_item.all('a.c-branches-list-item_time_link').each do |time_link|
-        # puts "*#{time_link.text}-"
-        text = time_link.text.strip
-        if text.length == 5
-          number_of_items_taken_into_account += 1
-          current_minutes, current_seconds = text.split(':').map {|item| item.to_i}
-          minutes += current_minutes
-          seconds += current_seconds
+    puts "build_id: *#{list_item['id']}-"
+    current_build_id = list_item['id'].split('_').last.to_i
+    if stop_build_id <= current_build_id && current_build_id <= start_build_id
+      label_text = list_item.find('div.c-branches-list-item_label-holder a').text
+      if label_text.strip == 'PASSED'
+        list_item.all('a.c-branches-list-item_time_link').each do |time_link|
+          text = time_link.text.strip
+          if text.length == 5
+            number_of_items_taken_into_account += 1
+            current_minutes, current_seconds = text.split(':').map {|item| item.to_i}
+            minutes += current_minutes
+            seconds += current_seconds
+          end
         end
       end
+    elsif current_build_id < stop_build_id
+      build_item_found = false
     end
   end
 end while build_item_found
