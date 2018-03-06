@@ -17,11 +17,19 @@ visit '/users/sign_in'
 
 username = ENV['SEMAPHORE_USERNAME']
 password = ENV['SEMAPHORE_PASSWORD']
+require_authentication_code = ENV['SEMAPHORE_REQUIRES_AUTHENTICATION_CODE'] == 'yes' rescue 'no'
 
 fill_in 'Email', with: username
 fill_in 'Password', with: password
 
 click_button 'Log In'
+
+if require_authentication_code
+  print 'Use authenticator and get an authentication code. Give it here: '
+  authentication_code = gets.strip
+  fill_in 'Code', with: authentication_code
+  click_button 'Proceed'
+end
 
 project = 'seedy'
 branch_name = 'revert-4922-revert-4911-replace_capybara_webkit_headless_chrome_capybara_setup'
@@ -34,6 +42,7 @@ number_of_items_taken_into_account = 0
 number_of_items = 0
 start_build_id = 15
 stop_build_id = 10
+
 begin
   page += 1
   visit "#{branch_page}?page=#{page}"
