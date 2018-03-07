@@ -46,7 +46,7 @@ number_of_items = 0
 if commandline_input.length < 3
   abort("3 arguments are required in the commandline,you've given #{commandline_input.length}:
   arg1 = Branch name, arg2 = Start build id, arg3 = Stop build id.
-  e.g I want to see average build time of between build 5 to 15 on the branch foo the commandline should read:
+  e.g I want to see average build time between builds 5 to 15 on the branch foo the commandline should read:
   bundle exec ruby main.rb foo 15 5")
 end
 
