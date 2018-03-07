@@ -31,17 +31,26 @@ if require_authentication_code
   click_button 'Proceed'
 end
 
+commandline_input = ARGV
+branch_name = ARGV[0]
+start_build_id = ARGV[1].to_i
+stop_build_id = ARGV[2].to_i
 project = 'seedy'
-branch_name = 'revert-4922-revert-4911-replace_capybara_webkit_headless_chrome_capybara_setup'
 branch_page = "/simplybusiness/#{project}/branches/#{branch_name}"
-
 page = 0
 minutes = 0
 seconds = 0
 number_of_items_taken_into_account = 0
 number_of_items = 0
-start_build_id = 15
-stop_build_id = 10
+
+if commandline_input.length < 3
+  abort("3 arguments are required in the commandline,you've given #{commandline_input.length}:
+  arg1 = Branch name, arg2 = Start build id, arg3 = Stop build id.
+  e.g I want to see average build time of between build 5 to 15 on the branch foo the commandline should read:
+  bundle exec ruby main.rb foo 15 5")
+end
+
+puts "ARGV: #{ARGV.inspect}"
 
 begin
   page += 1
@@ -71,7 +80,6 @@ begin
     end
   end
 end while build_item_found
-
 minutes = (minutes + seconds / 60.to_f) / number_of_items_taken_into_account.to_f
 
 puts "Number of all builds: #{number_of_items}"
