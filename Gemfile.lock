@@ -29,7 +29,7 @@ GEM
       byebug (~> 10.0)
       pry (~> 0.10)
     public_suffix (3.0.2)
-    rack (2.0.6)
+    rack (2.2.3)
     rack-test (0.8.3)
       rack (>= 1.0, < 3)
     xpath (3.0.0)
